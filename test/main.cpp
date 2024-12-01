@@ -1,56 +1,56 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-#include <iostream>
-#include <exception>
-#include <vector>
-#include <memory>
-#include <ctime>
+#include "../src/BluetoothException.h"
 #include "../src/DeviceINQ.h"
 #include "../src/Enums.h"
-#include "../src/BluetoothException.h"
+#include <ctime>
+#include <exception>
+#include <iostream>
+#include <memory>
+#include <vector>
 
 using namespace std;
 
-string formatDate(const char *format, time_t time)
+string formatDate(const char* format, time_t time)
 {
-	if (time <= 0)
-		return "--";
+    if (time <= 0)
+        return "--";
 
-	char buffer[256] = { 0 };
-	tm *timeinfo = localtime(&time);
+    char buffer[256] = {0};
+    tm* timeinfo = localtime(&time);
 
-	if (timeinfo)
-		strftime(buffer, sizeof(buffer), format, timeinfo);
+    if (timeinfo)
+        strftime(buffer, sizeof(buffer), format, timeinfo);
 
-	return buffer;
+    return buffer;
 }
 
 int main()
 {
-	try
-	{
-		unique_ptr<DeviceINQ> inq(DeviceINQ::Create());
-		vector<device> devices = inq->Inquire();
+    try
+    {
+        unique_ptr<DeviceINQ> inq(DeviceINQ::Create());
+        vector<device> devices = inq->Inquire();
 
-		for (const auto& d : devices)
-		{
-			cout << "\tname: " << d.name << endl;
-			cout << "\taddress: " << d.address << endl;
-			cout << "\tclass: " << GetDeviceClassString(d.deviceClass) << endl;
-			cout << "\tmajor class: " << GetDeviceClassString(d.majorDeviceClass) << endl;
-			cout << "\tservice class: " << GetServiceClassString(d.serviceClass) << endl;
-			cout << "\tlast seen: " << formatDate("%c", d.lastSeen) << endl;
-			cout << "\tlast used: " << formatDate("%c", d.lastUsed) << endl;
-			cout << "\tchannel ID: " << inq->SdpSearch(d.address) << endl;
-			cout << endl;
-		}
+        for (const auto& d : devices)
+        {
+            cout << "\tname: " << d.name << endl;
+            cout << "\taddress: " << d.address << endl;
+            cout << "\tclass: " << GetDeviceClassString(d.deviceClass) << endl;
+            cout << "\tmajor class: " << GetDeviceClassString(d.majorDeviceClass) << endl;
+            cout << "\tservice class: " << GetServiceClassString(d.serviceClass) << endl;
+            cout << "\tlast seen: " << formatDate("%c", d.lastSeen) << endl;
+            cout << "\tlast used: " << formatDate("%c", d.lastUsed) << endl;
+            cout << "\tchannel ID: " << inq->SdpSearch(d.address) << endl;
+            cout << endl;
+        }
 
-		cout << endl << "done, found " << devices.size() << " device(s)" << endl;
-	}
-	catch (const BluetoothException& e)
-	{
-		cout << e.what() << endl;
-	}
+        cout << endl << "done, found " << devices.size() << " device(s)" << endl;
+    }
+    catch (const BluetoothException& e)
+    {
+        cout << e.what() << endl;
+    }
 
-	return 0;
+    return 0;
 }
