@@ -24,4 +24,6 @@ public:
 	void Write(const char *buffer, int length);
 	bool IsDataAvailable();
 	//void SetTimeouts(int readTimeout, int writeTimeout);
+    bool IsDataAvailable(int64_t& count);
+    // void SetTimeouts(int readTimeout, int writeTimeout);
 };

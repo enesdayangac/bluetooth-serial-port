@@ -148,9 +148,10 @@ void BTSerialPortBinding::Write(const char *buffer, int length)
 		throw BluetoothException("Writing attempt was unsuccessful");
 }
 
-bool BTSerialPortBinding::IsDataAvailable()
+bool BTSerialPortBinding::IsDataAvailable(int64_t& count)
 {
-	int count;
-	ioctl(data->s, FIONREAD, &count);
-	return count > 0;
+    int countTemp;
+    ioctl(data->s, FIONREAD, &countTemp);
+    count = static_cast<int64_t>(countTemp);
+    return count > 0;
 }

@@ -155,14 +155,15 @@ void BTSerialPortBinding::Write(const char *buffer, int length)
 		throw BluetoothException("Writing attempt was unsuccessful");
 }
 
-bool BTSerialPortBinding::IsDataAvailable()
+bool BTSerialPortBinding::IsDataAvailable(int64_t& count)
 {
-	if (data->s == INVALID_SOCKET)
-		throw BluetoothException("connection has been closed");
+    if (data->s == INVALID_SOCKET)
+        throw BluetoothException("connection has been closed");
 
-	u_long count;
-	ioctlsocket(data->s, FIONREAD, &count);
-	return count > 0;
+    u_long countTemp;
+    ioctlsocket(data->s, FIONREAD, &countTemp);
+    count = static_cast<int64_t>(countTemp);
+    return count > 0;
 }
 
 //void BTSerialPortBinding::SetTimeouts(int readTimeout, int writeTimeout)
